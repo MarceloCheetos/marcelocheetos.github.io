@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Gerador inteligente de jogos para Lotofácil baseado em tendências e estatísticas reais.">
+    <meta name="keywords" content="Lotofácil, Gerador de loteria, Simulador Lotofácil, Apostas">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LotoSmart - Analisador Estratégico</title>
+<meta name="google-adsense-account" content="ca-pub-8235168110339259">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#208046">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/248/248930.png">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8235168110339259" crossorigin="anonymous"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #1b4d2e; display: flex; justify-content: center; padding: 20px; color: #333; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); max-width: 450px; width: 100%; text-align: center; }
+        .logo { color: #208046; font-size: 32px; font-weight: 800; margin-bottom: 5px; }
+        .status { font-size: 11px; color: #208046; background: #e8f5e9; display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        #concurso-info { font-size: 14px; color: #1a6337; margin-top: 15px; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; padding: 15px; background: #f8fafc; border-radius: 15px; }
+        .bola { width: 100%; aspect-ratio: 1 / 1; max-width: 42px; background: white; border: 2px solid #dee2e6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #adb5bd; font-size: 14px; margin: 0 auto; transition: 0.2s; }
+        .selecionada { background: #208046; color: white; border-color: #1a6337; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        button { background: #208046; color: white; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
+        button:hover { background: #165c32; transform: translateY(-2px); }
+        .painel-resultado { margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 12px; border: 1px solid #ffeeba; display: none; animation: fadeIn 0.5s; }
+        .acertos-num { font-size: 26px; font-weight: 900; color: #856404; }
+        #stats { margin: 20px auto; padding: 12px; background: #f1f5f9; border-radius: 12px; border: 1px solid #cbd5e1; width: fit-content; min-width: 160px; }
+        .contador-label { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold; display: block; }
+        #contador { font-size: 38px; font-weight: 900; color: #208046; line-height: 1; }
+        .footer-ads { margin-top: 25px; padding: 15px; background: #f1f5f9; border: 1px dashed #cbd5e1; color: #94a3b8; font-size: 10px; border-radius: 8px; text-transform: uppercase; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">LotoSmart 🍀</div>
+    <div class="status">ALGORITMO DE TENDÊNCIAS V3.0</div>
+
+    <div id="concurso-info">Analisando Concurso: <span id="num-concurso">----</span></div>
+
+    <div class="grid" id="gridMain"></div>
+
+    <button onclick="executarAnalise()">GERAR JOGO & CONFERIR</button>
+
+    <button id="btnZap" onclick="compartilharZap()" style="background: #25d366; margin-top: 10px; display: none;">
+        Enviar Jogo no WhatsApp 📱
+    </button>
+
+    <div id="resultadoSimulado" class="painel-resultado">
+        <div style="font-size: 13px; font-weight: bold;">Simulação com resultado real:</div>
+        <div class="acertos-num" id="txtAcertos">0 ACERTOS</div>
+        <div id="txtPremio" style="font-size: 13px; margin-top: 5px; font-weight: bold;"></div>
+    </div>
+
+    <div id="dica-tecnica" style="margin-top: 15px; font-size: 12px; color: #1b4d2e; background: #e8f5e9; padding: 10px; border-radius: 8px; display: none;">
+        <strong>💡 Dica do Algoritmo:</strong> <span id="txtDica"></span>
+    </div>
+
+    <div id="stats">
+        <span class="contador-label">Simulações Realizadas</span>
+        <div id="contador">0</div>
+    </div>
+
+    <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+        <h3 style="font-size: 14px; color: #1b4d2e;">Análise do Último Concurso</h3>
+        <div style="display: flex; justify-content: space-around; font-size: 12px;">
+            <div style="background: #e8f5e9; padding: 10px; border-radius: 8px;">
+                <span style="display:block; font-weight:bold;">Pares</span>
+                <span id="qtdPares">0</span>
+            </div>
+            <div style="background: #e8f5e9; padding: 10px; border-radius: 8px;">
+                <span style="display:block; font-weight:bold;">Ímpares</span>
+                <span id="qtdImpares">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 15px;">
+        <h3 style="font-size: 15px; color: #1b4d2e; margin-bottom: 10px;">📅 Últimos Sorteios</h3>
+        <div id="lista-historico" style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-size: 12px; color: #94a3b8;">Carregando histórico...</div>
+        </div>
+    </div>
+
+    <div style="text-align: left; margin-top: 25px; font-size: 13px; color: #475569; line-height: 1.5; border-top: 1px solid #eee; padding-top: 15px;">
+        <h3 style="font-size: 15px; color: #1b4d2e;">Como funciona o LotoSmart?</h3>
+        <p>Nosso algoritmo utiliza uma base de dados real para simular tendências, equilibrando dezenas quentes e médias para seus jogos automaticamente.</p>
+        <p><i>Lembre-se: Use para fins estatísticos e jogue com responsabilidade.</i></p>
+    </div>
+
+    <div class="footer-ads">Espaço reservado para Google AdSense</div>
+
+    <footer style="margin-top: 30px; padding-bottom: 10px; text-align: center; font-size: 10px; color: #999;">
+        <p>© 2026 LotoSmart - <a href="privacidade.html" style="color: #999; text-decoration: none;">Política de Privacidade</a></p>
+    </footer>
+
+</div>
+
+<script>
+    let ultimoSorteioReal = [];
+    const grid = document.getElementById('gridMain');
+
+    for(let i=1; i<=25; i++) {
+        let div = document.createElement('div');
+        div.className = 'bola';
+        div.id = 'bola' + i;
+        div.innerText = i.toString().padStart(2, '0');
+        grid.appendChild(div);
+    }
+
+    async function buscarResultadoReal() {
+        const statusEl = document.querySelector('.status');
+        statusEl.innerText = "ATUALIZANDO RESULTADOS...";
+        try {
+            const resposta = await fetch('https://loteriascaixa-api.herokuapp.com/api/lotofacil/latest');
+            const dados = await resposta.json();
+            document.getElementById('num-concurso').innerText = dados.concurso;
+            ultimoSorteioReal = dados.dezenas.map(n => parseInt(n));
+            statusEl.innerText = "CONECTADO AO BANCO DA CAIXA";
+            setTimeout(carregarHistorico, 1000);
+        } catch (erro) {
+            statusEl.innerText = "ERRO AO CONECTAR. USANDO RESERVA.";
+            ultimoSorteioReal = [1, 2, 3, 5, 8, 9, 10, 11, 13, 15, 16, 17, 21, 24, 25];
+        }
+        let pares = ultimoSorteioReal.filter(n => n % 2 === 0).length;
+        document.getElementById('qtdPares').innerText = pares;
+        document.getElementById('qtdImpares').innerText = 15 - pares;
+    }
+
+    function executarAnalise() {
+        document.querySelectorAll('.bola').forEach(b => b.classList.remove('selecionada'));
+        let meuJogo = [];
+        const quentes = [1, 2, 4, 5, 10, 11, 13, 14, 20, 24, 25];
+        const medios = [3, 6, 7, 8, 9, 12, 15, 17, 18, 19, 21, 22, 23];
+        while(meuJogo.length < 9) {
+            let n = quentes[Math.floor(Math.random() * quentes.length)];
+            if(!meuJogo.includes(n)) meuJogo.push(n);
+        }
+        while(meuJogo.length < 15) {
+            let n = medios[Math.floor(Math.random() * medios.length)];
+            if(!meuJogo.includes(n)) meuJogo.push(n);
+        }
+        meuJogo.forEach(n => document.getElementById('bola' + n).classList.add('selecionada'));
+        let acertos = meuJogo.filter(n => ultimoSorteioReal.includes(n)).length;
+        document.getElementById('resultadoSimulado').style.display = 'block';
+        document.getElementById('txtAcertos').innerText = acertos + " ACERTOS";
+        const txtPremio = document.getElementById('txtPremio');
+        txtPremio.innerText = acertos >= 11 ? "💰 VOCÊ GANHARIA PRÊMIO!" : "Continue tentando!";
+        txtPremio.style.color = acertos >= 11 ? "#208046" : "#856404";
+        let contadorEl = document.getElementById('contador');
+        contadorEl.innerText = parseInt(contadorEl.innerText) + 1;
+        let todosNumeros = Array.from({length: 25}, (_, i) => i + 1);
+        let ausentes = todosNumeros.filter(n => !ultimoSorteioReal.includes(n));
+        let sugestao = ausentes.sort(() => 0.5 - Math.random()).slice(0, 3);
+        document.getElementById('dica-tecnica').style.display = 'block';
+        document.getElementById('txtDica').innerText = "Fique de olho nos números " + sugestao.join(", ") + ". Estão atrasados!";
+        document.getElementById('btnZap').style.display = 'block';
+        window.jogoAtual = meuJogo.sort((a, b) => a - b).join(" - ");
+    }
+
+    function compartilharZap() {
+        const mensagem = "Olha o jogo que gerei no LotoSmart: " + window.jogoAtual + "\nGere o seu: " + window.location.href;
+        window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensagem), '_blank');
+    }
+
+async function carregarHistorico() {
+    const lista = document.getElementById('lista-historico');
+    const numConcursoEl = document.getElementById('num-concurso');
+    const concursoAtual = parseInt(numConcursoEl.innerText);
+    
+    if (!concursoAtual || isNaN(concursoAtual)) return; 
+
+    let htmlHistorico = "";
+
+    // 1. ADICIONAR O RESULTADO DO CONCURSO ATUAL (Destaque)
+    htmlHistorico += `
+        <div style="background: #e8f5e9; padding: 12px; border-radius: 12px; text-align: left; border: 2px solid #208046; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 900; font-size: 14px; color: #1b4d2e;">🏆 RESULTADO ATUAL (${concursoAtual})</span>
+                <span style="font-size: 10px; background: #208046; color: white; padding: 2px 8px; border-radius: 10px;">OFICIAL</span>
+            </div>
+            <div style="font-size: 13px; color: #1b4d2e; margin-top: 8px; letter-spacing: 2px; font-weight: bold; background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                ${ultimoSorteioReal.join(" - ")}
+            </div>
+        </div>
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 10px; text-align: left; font-weight: bold;">📅 CONCURSOS ANTERIORES:</div>
+    `;
+
+    // 2. BUSCAR OS 3 ANTERIORES (Histórico Normal)
+    for (let i = 1; i <= 3; i++) {
+        let numBusca = concursoAtual - i;
+        try {
+            const res = await fetch(`https://loteriascaixa-api.herokuapp.com/api/lotofacil/${numBusca}`);
+            const dado = await res.json();
+            
+            htmlHistorico += `
+                <div style="background: #f8fafc; padding: 10px; border-radius: 10px; text-align: left; border-left: 4px solid #cbd5e1; margin-bottom: 5px;">
+                    <div style="font-weight: bold; font-size: 12px; color: #475569;">Concurso ${dado.concurso}</div>
+                    <div style="font-size: 11px; color: #64748b; margin-top: 4px; letter-spacing: 1px;">
+                        ${dado.dezenas.join(" - ")}
+                    </div>
+                </div>
+            `;
+        } catch (e) { console.error("Erro no histórico", e); }
+    }
+    
+    lista.innerHTML = htmlHistorico;
+}
+
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+    buscarResultadoReal();
+</script>
+</body>
+</html>

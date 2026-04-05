@@ -1,0 +1,15 @@
+{
+  "name": "LotoSmart Analisador",
+  "short_name": "LotoSmart",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1b4d2e",
+  "theme_color": "#208046",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/248/248930.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 
