@@ -127,10 +127,13 @@
         window.jogoAtual = meuJogo.sort((a, b) => a - b).join(" - ");
     }
 
-    function compartilharZap() {
-        const mensagem = "Confira meu jogo da Mega-Sena no LotoSmart: " + window.jogoAtual;
-        window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensagem), '_blank');
-    }
+   function compartilharZap() {
+    // Pega o link automático da página onde o usuário está
+    const linkSite = window.location.href; 
+    const mensagem = "Confira meu jogo no LotoSmart: " + window.jogoAtual + "\n\nFaça o seu também aqui: " + linkSite;
+    
+    window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensagem), '_blank');
+}
 
     buscarDadosOficiais();
 </script>
