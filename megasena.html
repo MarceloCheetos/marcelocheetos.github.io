@@ -5,30 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LotoSmart - Analisador Mega-Sena</title>
     <meta name="google-adsense-account" content="ca-pub-8235168110339259">
-    
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8235168110339259" crossorigin="anonymous"></script>
-
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #004a2f; display: flex; justify-content: center; padding: 15px; color: #333; margin: 0; }
-        .container { background: white; padding: 20px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); max-width: 450px; width: 100%; text-align: center; }
-        .logo { color: #209869; font-size: 28px; font-weight: 800; margin-bottom: 5px; }
-        .status { font-size: 10px; color: #209869; background: #e8f5e9; display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; text-transform: uppercase; }
+        body { font-family: 'Segoe UI', sans-serif; background: #004a2f; display: flex; justify-content: center; padding: 20px; color: #333; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); max-width: 450px; width: 100%; text-align: center; }
+        .btn-voltar { display: block; text-decoration: none; color: #209869; font-size: 13px; font-weight: bold; margin-bottom: 20px; text-align: left; transition: 0.3s; }
+        .logo { color: #209869; font-size: 32px; font-weight: 800; margin-bottom: 5px; }
+        .status { font-size: 11px; color: #209869; background: #e8f5e9; display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; text-transform: uppercase; }
         
-        /* Grid Ajustada para 60 números (10 colunas para caber tudo) */
-        .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin: 15px 0; padding: 10px; background: #f8fafc; border-radius: 15px; }
+        .ads-placeholder { margin: 15px 0; min-height: 50px; background: #f9f9f9; border: 1px dashed #bbb; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; }
+
+        #concurso-info { font-size: 14px; color: #115e41; margin-top: 15px; font-weight: bold; }
         
-        /* Bolas menores para a Mega-Sena */
+        /* Grid Mega-Sena (10 colunas para 60 números) */
+        .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin: 20px 0; padding: 10px; background: #f8fafc; border-radius: 15px; }
         .bola { width: 100%; aspect-ratio: 1 / 1; background: white; border: 1px solid #dee2e6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #adb5bd; font-size: 10px; transition: 0.2s; }
         
-        .selecionada { background: #209869; color: white; border-color: #115e41; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        /* Cor característica da Mega-Sena */
+        .selecionada { background: #209869 !important; color: white !important; border-color: #115e41 !important; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
         
-        button { background: #209869; color: white; border: none; padding: 16px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
-        button:hover { background: #115e41; }
-        
+        button { background: #209869; color: white; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
         .painel-resultado { margin-top: 20px; padding: 15px; background: #e0f2f1; border-radius: 12px; border: 1px solid #b2dfdb; display: none; }
-        #lista-historico { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
-        
-        .btn-voltar { display: inline-block; margin-bottom: 15px; color: #64748b; text-decoration: none; font-size: 12px; font-weight: bold; }
+        .acertos-num { font-size: 26px; font-weight: 900; color: #00695c; }
+        .footer-text { text-align: left; margin-top: 30px; font-size: 13px; color: #475569; line-height: 1.6; border-top: 1px solid #eee; padding-top: 20px; }
+        .item-hist { background: #f8fafc; padding: 8px; border-radius: 10px; text-align: left; border-left: 4px solid #209869; margin-bottom: 5px; font-size: 11px; }
     </style>
 </head>
 <body>
@@ -36,98 +36,97 @@
 <div class="container">
     <a href="index.html" class="btn-voltar">⬅ VOLTAR AO MENU</a>
     <div class="logo">Mega-Sena 🍀</div>
-    <div class="status" id="status-api">Sincronizando...</div>
+    <div class="status">Analisador Mega-Sena V3.0</div>
+    
+    <div class="ads-placeholder">ESPAÇO PARA ANÚNCIO</div>
 
-    <div id="concurso-info" style="font-size:13px; margin-top:10px; font-weight:bold; color:#115e41;">
-        Concurso Atual: <span id="num-concurso">----</span>
-    </div>
+    <div id="concurso-info">Concurso Atual: <span id="num-concurso">----</span></div>
 
-    <div class="grid" id="gridMega"></div>
+    <div class="grid" id="gridMain"></div>
 
-    <button onclick="gerarMega()">GERAR 6 DEZENAS E CONFERIR</button>
+    <button onclick="executarAnalise()">GERAR 6 DEZENAS & CONFERIR</button>
+    <button id="btnZap" onclick="compartilharZap()" style="background: #25d366; margin-top: 10px; display: none;">Enviar no WhatsApp 📱</button>
 
     <div id="resultadoSimulado" class="painel-resultado">
-        <div style="font-size: 12px; font-weight: bold;">Simulação com resultado real:</div>
-        <div id="txtAcertos" style="font-size: 24px; font-weight: 900; color: #00695c;">0 ACERTOS</div>
+        <div style="font-size: 13px; font-weight: bold;">Simulação com resultado real:</div>
+        <div class="acertos-num" id="txtAcertos">0 ACERTOS</div>
     </div>
 
-    <div style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 15px;">
-        <h3 style="font-size: 15px; color: #115e41; margin-bottom: 10px;">📅 Últimos Sorteios</h3>
-        <div id="lista-historico">
-            <div style="font-size: 12px; color: #94a3b8;">Carregando histórico oficial...</div>
-        </div>
+    <div id="lista-historico" style="margin-top: 20px;"></div>
+
+    <div class="footer-text">
+        <h3 style="font-size: 16px; color: #115e41; margin-bottom: 10px;">Como funciona a análise da Mega?</h3>
+        <p>O LotoSmart processa os últimos resultados da Mega-Sena para ajudar você a escolher dezenas baseadas em frequência e equilíbrio de quadrantes no volante.</p>
+        <p><i>Aviso: Este site é um simulador gratuito. Jogue com responsabilidade.</i></p>
     </div>
+
+    <div class="ads-placeholder">ESPAÇO PARA ANÚNCIO</div>
 </div>
 
 <script>
     let ultimoSorteioReal = [];
-    const grid = document.getElementById('gridMega');
+    const grid = document.getElementById('gridMain');
 
-    // Criar as 60 bolas
     for(let i=1; i<=60; i++) {
         let div = document.createElement('div');
-        div.className = 'bola';
-        div.id = 'bola' + i;
-        div.innerText = i.toString().padStart(2, '0');
+        div.className = 'bola'; div.id = 'bola' + i; div.innerText = i.toString().padStart(2, '0');
         grid.appendChild(div);
     }
 
-    async function buscarDados() {
+    async function buscarDadosOficiais() {
         try {
-            const res = await fetch('https://loteriascaixa-api.herokuapp.com/api/megasena/latest');
-            const dados = await res.json();
-            document.getElementById('num-concurso').innerText = dados.concurso;
+            const resposta = await fetch('https://loteriascaixa-api.herokuapp.com/api/megasena/latest');
+            const dados = await resposta.json();
+            const numAtual = dados.concurso;
+            document.getElementById('num-concurso').innerText = numAtual;
             ultimoSorteioReal = dados.dezenas.map(n => parseInt(n));
-            document.getElementById('status-api').innerText = "Conectado à Caixa";
-            carregarHistorico();
-        } catch (e) {
-            document.getElementById('status-api').innerText = "Modo Offline";
-        }
+            
+            let html = `
+                <div style="background: #e0f2f1; padding: 12px; border-radius: 12px; text-align: left; border: 2px solid #209869; margin-bottom: 15px;">
+                    <div style="font-weight: 900; font-size: 12px; color: #004d40;">🏆 RESULTADO ATUAL:</div>
+                    <div style="font-size: 13px; color: #004d40; margin-top: 8px; font-weight: bold; background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                        ${ultimoSorteioReal.join(" - ")}
+                    </div>
+                </div>
+                <div style="font-weight: bold; font-size: 12px; color: #115e41; text-align: left; margin-bottom: 10px;">HISTÓRICO ANTERIOR:</div>
+            `;
+
+            for (let i = 1; i <= 3; i++) {
+                try {
+                    const resHist = await fetch(`https://loteriascaixa-api.herokuapp.com/api/megasena/${numAtual - i}`);
+                    const dadoHist = await resHist.json();
+                    html += `
+                        <div class="item-hist">
+                            <div style="font-weight: bold; color: #475569;">Concurso ${dadoHist.concurso}</div>
+                            <div style="color: #64748b;">${dadoHist.dezenas.join(" - ")}</div>
+                        </div>`;
+                } catch (e) {}
+            }
+            document.getElementById('lista-historico').innerHTML = html;
+        } catch (erro) { console.log("Erro na API"); }
     }
 
-    function gerarMega() {
+    function executarAnalise() {
         document.querySelectorAll('.bola').forEach(b => b.classList.remove('selecionada'));
-        let jogo = [];
-        while(jogo.length < 6) {
+        let meuJogo = [];
+        while(meuJogo.length < 6) {
             let n = Math.floor(Math.random() * 60) + 1;
-            if(!jogo.includes(n)) jogo.push(n);
+            if(!meuJogo.includes(n)) meuJogo.push(n);
         }
-        jogo.sort((a,b) => a-b).forEach(n => document.getElementById('bola' + n).classList.add('selecionada'));
-        
-        let acertos = jogo.filter(n => ultimoSorteioReal.includes(n)).length;
+        meuJogo.forEach(n => { document.getElementById('bola' + n).classList.add('selecionada'); });
+        let acertos = meuJogo.filter(n => ultimoSorteioReal.includes(n)).length;
         document.getElementById('resultadoSimulado').style.display = 'block';
         document.getElementById('txtAcertos').innerText = acertos + " ACERTOS";
+        document.getElementById('btnZap').style.display = 'block';
+        window.jogoAtual = meuJogo.sort((a, b) => a - b).join(" - ");
     }
 
-    async function carregarHistorico() {
-        const lista = document.getElementById('lista-historico');
-        const concursoAtual = parseInt(document.getElementById('num-concurso').innerText);
-        if (!concursoAtual) return;
-
-        let html = `
-            <div style="background: #e8f5e9; padding: 10px; border-radius: 12px; text-align: left; border: 2px solid #209869; margin-bottom: 15px;">
-                <div style="font-weight: 900; font-size: 12px; color: #115e41;">🏆 RESULTADO ATUAL (${concursoAtual})</div>
-                <div style="font-size: 14px; color: #115e41; margin-top: 8px; font-weight: bold; background: white; padding: 8px; border-radius: 8px; text-align: center;">
-                    ${ultimoSorteioReal.join(" - ")}
-                </div>
-            </div>
-        `;
-
-        for (let i = 1; i <= 3; i++) {
-            try {
-                const res = await fetch(`https://loteriascaixa-api.herokuapp.com/api/megasena/${concursoAtual - i}`);
-                const dado = await res.json();
-                html += `
-                    <div style="background: #f8fafc; padding: 8px; border-radius: 10px; text-align: left; border-left: 4px solid #209869; margin-bottom: 5px;">
-                        <div style="font-weight: bold; font-size: 11px; color: #475569;">Concurso ${dado.concurso}</div>
-                        <div style="font-size: 11px; color: #64748b;">${dado.dezenas.join(" - ")}</div>
-                    </div>`;
-            } catch (e) {}
-        }
-        lista.innerHTML = html;
+    function compartilharZap() {
+        const mensagem = "Confira meu jogo da Mega-Sena no LotoSmart: " + window.jogoAtual;
+        window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensagem), '_blank');
     }
 
-    buscarDados();
+    buscarDadosOficiais();
 </script>
 </body>
 </html>
